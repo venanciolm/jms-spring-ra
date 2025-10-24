@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.farmafene.j2ee</groupId>
 	<artifactId>jms-spring-ra</artifactId>
-	<version>1.0.0-rc0</version>
+	<version>1.0.0-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description><![CDATA[JMS RA for Spring]]></description>
 	<url><![CDATA[https://github.com/venanciolm/jms-spring-ra]]></url>
@@ -31,7 +31,7 @@
 		<com.farmafene.j2ee_tx-utils>1.0.0</com.farmafene.j2ee_tx-utils>
 	</properties>
 	<scm>
-		<tag>1.0.0-rc0</tag>
+		<tag>HEAD</tag>
 		<url><![CDATA[https://github.com/venanciolm/tranql-connector-jakarta]]></url>
 		<connection><![CDATA[scm:git:https://github.com/venanciolm/jms-spring-ra.git]]></connection>
 		<developerConnection><![CDATA[scm:git:https://github.com/venanciolm/jms-spring-ra.git]]></developerConnection>
