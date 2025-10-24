@@ -30,7 +30,7 @@
 		<!-- -->
 		<org.slf4j.VERSION>2.0.17</org.slf4j.VERSION>
 		<log4j.VERSION>2.24.3</log4j.VERSION>
-		<com.farmafene.j2ee_tx-utils>1.0.0-m0</com.farmafene.j2ee_tx-utils>
+		<com.farmafene.j2ee_tx-utils>1.0.0</com.farmafene.j2ee_tx-utils>
 	</properties>
 	<scm>
 		<tag>HEAD</tag>
