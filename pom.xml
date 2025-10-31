@@ -1,4 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.farmafene.j2ee</groupId>
 	<artifactId>jms-spring-ra</artifactId>
@@ -29,6 +31,10 @@
 		<org.slf4j.VERSION>2.0.17</org.slf4j.VERSION>
 		<log4j.VERSION>2.24.3</log4j.VERSION>
 		<com.farmafene.j2ee_tx-utils>1.0.0</com.farmafene.j2ee_tx-utils>
+		<geronimo.version>4.0.0</geronimo.version>
+		<spring-boot.version>3.3.4</spring-boot.version>
+		<springframework.version>6.1.13</springframework.version>
+		<qpid-jms-client>2.9.0</qpid-jms-client>
 	</properties>
 	<scm>
 		<tag>HEAD</tag>
@@ -99,6 +105,56 @@
 			<groupId>org.slf4j</groupId>
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>${org.slf4j.VERSION}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.geronimo.components</groupId>
+			<artifactId>geronimo-transaction</artifactId>
+			<version>${geronimo.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.geronimo.components</groupId>
+			<artifactId>geronimo-connector</artifactId>
+			<version>${geronimo.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${spring-boot.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.apache.logging.log4j</groupId>
+					<artifactId>log4j-to-slf4j</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>ch.qos.logback</groupId>
+					<artifactId>logback-classic</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>org.springframework</groupId>
+					<artifactId>spring-jcl</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-tx</artifactId>
+			<version>${springframework.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jms</artifactId>
+			<version>${springframework.version}</version>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.qpid</groupId>
+			<artifactId>qpid-jms-client</artifactId>
+			<version>${qpid-jms-client}</version>
 			<scope>test</scope>
 		</dependency>
 	</dependencies>

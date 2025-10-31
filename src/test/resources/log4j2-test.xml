@@ -1,0 +1,36 @@
+<!DOCTYPE xml>
+<!-- -->
+<!-- -->
+<!-- https://logging.apache.org/log4j/2.x/manual/configuration.html -->
+<!-- https://logging.apache.org/log4j/2.x/manual/layouts.html -->
+<!-- -->
+<Configuration status="info" name="TEST"
+	monitorInterval="5">
+	<Appenders>
+		<Console name="CONSOLE" target="SYSTEM_OUT" direct="true"
+			ignoreExceptions="false">
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd'T'HH:mm:ss.SSSXXX}[%-5level][%t] %c{3.4}{-3}:%L - %m%n" />
+		</Console>
+	</Appenders>
+	<Loggers>
+		<Logger name="com.farmafene.jms.outbound" level="TRACE"
+			additivity="false">
+			<AppenderRef ref="CONSOLE" />
+		</Logger>
+		<Logger name="com.farmafene.jms.ra" level="TRACE"
+			additivity="false">
+			<AppenderRef ref="CONSOLE" />
+		</Logger>
+		<Logger name="com.farmafene" level="info" additivity="false">
+			<AppenderRef ref="CONSOLE" />
+		</Logger>
+		<Logger name="org.springframework.transaction" level="trace"
+			additivity="false">
+			<AppenderRef ref="CONSOLE" />
+		</Logger>
+		<Root level="INFO">
+			<AppenderRef ref="CONSOLE" />
+		</Root>
+	</Loggers>
+</Configuration>
