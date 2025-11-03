@@ -1,6 +1,7 @@
 package com.farmafene.jms.outbound;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,13 +29,23 @@ import jakarta.jms.TopicSubscriber;
 public class LocalSession implements Session {
 	private static final Logger LOGGER = LoggerFactory.getLogger(LocalSession.class);
 	private ManagedJMSConnection managedJMSConnection;
+	private String id;
 
 	public LocalSession(ManagedJMSConnection managedJMSConnection) {
 		this.managedJMSConnection = managedJMSConnection;
+		this.id = UUID.randomUUID().toString();
 	}
 
 	private Session getMngtSession() {
 		return this.managedJMSConnection.getSession();
+	}
+
+	/**
+	 * @see java.lang.Object#toString()
+	 */
+	@Override
+	public String toString() {
+		return "LocalSession [Id:" + managedJMSConnection.getId() + "::" + this.id + "::" + getMngtSession() + "]";
 	}
 
 	/**
@@ -404,5 +415,4 @@ public class LocalSession implements Session {
 		LOGGER.trace("unsubscribe(String: {})", name);
 		getMngtSession().unsubscribe(name);
 	}
-
 }

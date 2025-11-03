@@ -95,7 +95,9 @@ public class LocalConnection implements Connection {
 	public Session createSession() throws JMSException {
 		Session sess = jmsConnection.createSession(true, Session.SESSION_TRANSACTED);
 		managedJMSConnection.setSession(sess);
-		return new LocalSession(managedJMSConnection);
+		LocalSession ls = new LocalSession(managedJMSConnection);
+		LOGGER.trace("createSession():={}", ls);
+		return ls;
 	}
 
 	/**

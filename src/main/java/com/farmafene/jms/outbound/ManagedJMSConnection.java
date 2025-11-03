@@ -33,9 +33,7 @@ public class ManagedJMSConnection implements ManagedConnection {
 	private JMSLocalManagedConnectionFactory jmsLocalManagedConnectionFactory;
 	private List<ConnectionEventListener> connectionEventListeners;
 	private String id;
-
 	private PrintWriter logWriter;
-
 	private ManagedConnectionMetaData metatata;
 
 	public static class ManagedJMSConnectionLocalTx implements LocalTransaction {
@@ -317,5 +315,11 @@ public class ManagedJMSConnection implements ManagedConnection {
 	 */
 	public void setSession(Session session) {
 		this.session = session;
+	}
+	/**
+	 * @return the id
+	 */
+	public String getId() {
+		return id;
 	}
 }
