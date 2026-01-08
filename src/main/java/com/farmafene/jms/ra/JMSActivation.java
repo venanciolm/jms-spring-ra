@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import com.farmafene.commons.tx.XAHelper;
 
 import jakarta.jms.Destination;
+import jakarta.jms.ExceptionListener;
 import jakarta.jms.JMSException;
 import jakarta.jms.MessageConsumer;
 import jakarta.jms.MessageListener;
@@ -30,6 +31,7 @@ import jakarta.resource.spi.work.WorkException;
  */
 public class JMSActivation {
 
+	private static final int RETRY_MS = 60000;
 	private static final Logger LOG = LoggerFactory.getLogger(JMSActivation.class);
 	private JMSResourceAdapter ra;
 	private JMSActivationSpec spec;
@@ -45,6 +47,7 @@ public class JMSActivation {
 		}
 
 		public void setXAResource(XAResource xaResource) {
+			LOG.info("Establecido el XAResouce en: {}", xaResource);
 			this.internal = xaResource;
 		}
 
@@ -215,7 +218,7 @@ public class JMSActivation {
 		}
 	}
 
-	private static class ConsumerWork implements Work {
+	private static class ConsumerWork implements Work, ExceptionListener {
 		private JMSActivation jmsActivation;
 		private boolean stopped = false;
 		private XAResourceWrapper xAResourceWrapper;
@@ -230,26 +233,57 @@ public class JMSActivation {
 			try {
 				this.messageEndPoint = jmsActivation.endpointFactory.createEndpoint(xAResourceWrapper);
 			} catch (UnavailableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				LOG.error("Error en conexión", e);
 			}
 		}
 
 		public void setup() throws JMSException {
 			synchronized (this) {
 				latch = new CountDownLatch(1);
-				XAConnection conTemp = this.jmsActivation.spec.getXAConnectionFactory().createXAConnection();
-				XASession sessTemp = conTemp.createXASession();
-				Destination destination = sessTemp.createQueue(this.jmsActivation.spec.getQueue());
-				MessageConsumer consumerTemp = sessTemp.createConsumer(destination);
-				XAResource xaRes = sessTemp.getXAResource();
-				xAResourceWrapper.setXAResource(xaRes);
-				consumerTemp.setMessageListener((MessageListener) this.messageEndPoint);
-				con = conTemp;
-				consumer = consumerTemp;
-				con.start();
-				LOG.info("Arrancado el consumedor: {} en session: {}", consumer, sessTemp);
+				tryConnect();
 			}
+		}
+
+		private void tryConnect() {
+			int wait = RETRY_MS;
+			boolean notConnected = true;
+			do {
+				if (this.stopped) {
+					break;
+				}
+				try {
+					XASession sessTemp = populaConsumer();
+					notConnected = false;
+					LOG.info("Arrancado el consumidor: {} en session: {}", consumer, sessTemp);
+				} catch (JMSException e) {
+					LOG.error("Error al arrancar el consumidor", e);
+					try {
+						Thread.sleep(wait);
+						if (wait < 5 * RETRY_MS) {
+							wait += wait;
+						}
+					} catch (InterruptedException ie) {
+						// do nothing
+					}
+				}
+			} while (notConnected);
+		}
+
+		private XASession populaConsumer() throws JMSException {
+			XAConnection conTemp = null;
+			MessageConsumer consumerTemp = null;
+			conTemp = this.jmsActivation.spec.getXAConnectionFactory().createXAConnection();
+			conTemp.setExceptionListener(this);
+			XASession sessTemp = conTemp.createXASession();
+			Destination destination = sessTemp.createQueue(this.jmsActivation.spec.getQueue());
+			consumerTemp = sessTemp.createConsumer(destination);
+			XAResource xaRes = sessTemp.getXAResource();
+			xAResourceWrapper.setXAResource(xaRes);
+			consumerTemp.setMessageListener((MessageListener) this.messageEndPoint);
+			con = conTemp;
+			consumer = consumerTemp;
+			con.start();
+			return sessTemp;
 		}
 
 		public void stop() {
@@ -259,6 +293,13 @@ public class JMSActivation {
 				if (null != consumer) {
 					try {
 						this.consumer.close();
+					} catch (JMSException e) {
+						LOG.error("Error en el cerrado de la conexión", e);
+					}
+				}
+				if (null != con) {
+					try {
+						this.con.close();
 					} catch (JMSException e) {
 						LOG.error("Error en el cerrado de la conexión", e);
 					}
@@ -277,6 +318,7 @@ public class JMSActivation {
 				try {
 					setup();
 					latch.await();
+					stop();
 				} catch (InterruptedException e) {
 					LOG.error("Se ha interumpido el thread Contenedor", e);
 				} catch (JMSException e) {
@@ -294,6 +336,16 @@ public class JMSActivation {
 		public void release() {
 			LOG.trace("{}.release()", this);
 			// ¿?
+		}
+
+		/**
+		 * 
+		 * @see jakarta.jms.ExceptionListener#onException(jakarta.jms.JMSException)
+		 */
+		@Override
+		public void onException(JMSException exception) {
+			LOG.error("Error en la conexión", exception);
+			tryConnect();
 		}
 	}
 
