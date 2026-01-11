@@ -48,9 +48,12 @@ public class JMSMessageEndpointFactory implements MessageEndpointFactory {
 	 */
 	@Override
 	public MessageEndpoint createEndpoint(XAResource xaResource) throws UnavailableException {
-		MessageEndpoint mep = new JMSMessageEndPoint(endpoint, transactionManager, xaResource);
-		LOGGER.trace("createEndpoint(XAResource: {}):={}", xaResource, mep);
-		return mep;
+		if (xaResource instanceof JMSInBoundXAResource) {
+			MessageEndpoint mep = new JMSMessageEndPoint(endpoint, transactionManager, (JMSInBoundXAResource) xaResource);
+			LOGGER.trace("createEndpoint(XAResource: {}):={}", xaResource, mep);
+			return mep;
+		}
+		throw new UnavailableException("El XAResource no es un " + JMSInBoundXAResource.class.getCanonicalName());
 	}
 
 	/**

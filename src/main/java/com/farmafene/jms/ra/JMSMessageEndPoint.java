@@ -2,8 +2,6 @@ package com.farmafene.jms.ra;
 
 import java.lang.reflect.Method;
 
-import javax.transaction.xa.XAResource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,11 +22,12 @@ import jakarta.transaction.TransactionManager;
 public class JMSMessageEndPoint implements MessageEndpoint, MessageListener {
 
 	private static final Logger LOGGER = LoggerFactory.getLogger(JMSMessageEndPoint.class);
-	private XAResource xAResource;
+	private JMSInBoundXAResource xAResource;
 	private MessageListener endpoint;
 	private TransactionManager transactionManager;
 
-	public JMSMessageEndPoint(MessageListener endpoint, TransactionManager transactionManager, XAResource xaResource) {
+	public JMSMessageEndPoint(MessageListener endpoint, TransactionManager transactionManager,
+			JMSInBoundXAResource xaResource) {
 		this.endpoint = endpoint;
 		this.transactionManager = transactionManager;
 		this.xAResource = xaResource;
@@ -133,6 +132,10 @@ public class JMSMessageEndPoint implements MessageEndpoint, MessageListener {
 			afterDelivery();
 		} catch (ResourceException e) {
 			LOGGER.error("onMessage().afterDelivery(KO, Message: {})", message, e);
+			LOGGER.error("onMessage().afterDelivery():: destruyendo ...", xAResource);
+			xAResource.phisicalClose();
+			xAResource.phisicalConnect();
+			LOGGER.error("onMessage().afterDelivery():: Generado ...", xAResource);
 		}
 	}
 
@@ -152,10 +155,14 @@ public class JMSMessageEndPoint implements MessageEndpoint, MessageListener {
 					case Status.STATUS_ACTIVE:
 						LOGGER.trace("afterDelivery(){}", ".commit()");
 						transactionManager.commit();
+						LOGGER.trace("afterDelivery({})::{}", ".postCommit()",
+								XAHelper.getStringFromStatus(transactionManager.getTransaction()));
 						break;
 					case Status.STATUS_MARKED_ROLLBACK:
 						LOGGER.trace("afterDelivery(){}", ".rollback()");
 						transactionManager.rollback();
+						LOGGER.trace("afterDelivery({})::{}", ".postRollback()",
+								XAHelper.getStringFromStatus(transactionManager.getTransaction()));
 						break;
 					case Status.STATUS_PREPARED:
 					case Status.STATUS_COMMITTED:
