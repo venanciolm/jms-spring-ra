@@ -155,14 +155,14 @@ public class JMSMessageEndPoint implements MessageEndpoint, MessageListener {
 					case Status.STATUS_ACTIVE:
 						LOGGER.trace("afterDelivery(){}", ".commit()");
 						transactionManager.commit();
-						LOGGER.trace("afterDelivery({})::{}", ".postCommit()",
-								XAHelper.getStringFromStatus(transactionManager.getTransaction()));
+						LOGGER.trace("afterDelivery({})::{}",
+								XAHelper.getStringFromStatus(transactionManager.getTransaction()), ".postCommit()");
 						break;
 					case Status.STATUS_MARKED_ROLLBACK:
 						LOGGER.trace("afterDelivery(){}", ".rollback()");
 						transactionManager.rollback();
-						LOGGER.trace("afterDelivery({})::{}", ".postRollback()",
-								XAHelper.getStringFromStatus(transactionManager.getTransaction()));
+						LOGGER.trace("afterDelivery({})::{}",
+								XAHelper.getStringFromStatus(transactionManager.getTransaction()), ".postRollback()");
 						break;
 					case Status.STATUS_PREPARED:
 					case Status.STATUS_COMMITTED:
