@@ -133,8 +133,8 @@ public class JMSMessageEndPoint implements MessageEndpoint, MessageListener {
 		} catch (ResourceException e) {
 			LOGGER.error("onMessage().afterDelivery(KO, Message: {})", message, e);
 			LOGGER.error("onMessage().afterDelivery():: destruyendo ...", xAResource);
-			xAResource.phisicalClose();
-			xAResource.phisicalConnect();
+			xAResource.physicalClose();
+			xAResource.physicalConnect();
 			LOGGER.error("onMessage().afterDelivery():: Generado ...", xAResource);
 		}
 	}

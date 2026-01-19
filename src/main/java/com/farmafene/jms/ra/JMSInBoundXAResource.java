@@ -72,7 +72,7 @@ class JMSInBoundXAResource implements XAResource, Work, ExceptionListener {
 	public void setup() throws JMSException {
 		synchronized (this) {
 			latch = new CountDownLatch(1);
-			phisicalConnect();
+			physicalConnect();
 		}
 	}
 
@@ -89,7 +89,7 @@ class JMSInBoundXAResource implements XAResource, Work, ExceptionListener {
 	/**
 	 * Realiza la conexión a JMS en modo listener
 	 */
-	public void phisicalConnect() {
+	public void physicalConnect() {
 		int wait = RETRY_MS;
 		boolean notConnected = true;
 		do {
@@ -109,7 +109,7 @@ class JMSInBoundXAResource implements XAResource, Work, ExceptionListener {
 				LOG.info("Arrancado el consumidor: {}", this);
 			} catch (JMSException e) {
 				LOG.error("Error al arrancar el consumidor {}", this, e);
-				phisicalClose();
+				physicalClose();
 				try {
 					Thread.sleep(wait);
 					if (wait < 5 * RETRY_MS) {
@@ -125,7 +125,7 @@ class JMSInBoundXAResource implements XAResource, Work, ExceptionListener {
 	/**
 	 * Cierra las conexiones, sesiones, consumidores físicos.
 	 */
-	public void phisicalClose() {
+	public void physicalClose() {
 		LOG.info("Parando el consumidor: {}", this);
 		if (null != consumer) {
 			try {
@@ -168,7 +168,7 @@ class JMSInBoundXAResource implements XAResource, Work, ExceptionListener {
 				setup();
 				LOG.info("Esperando por un mensaje ...");
 				latch.await();
-				phisicalClose();
+				physicalClose();
 			} catch (InterruptedException e) {
 				LOG.error("Se ha interumpido el thread Contenedor", e);
 			} catch (JMSException e) {
@@ -195,8 +195,8 @@ class JMSInBoundXAResource implements XAResource, Work, ExceptionListener {
 	@Override
 	public void onException(JMSException exception) {
 		LOG.error("Error en la conexión", exception);
-		phisicalClose();
-		phisicalConnect();
+		physicalClose();
+		physicalConnect();
 	}
 
 	/**
