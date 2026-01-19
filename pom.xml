@@ -33,6 +33,7 @@
 		<spring-boot.version>3.3.4</spring-boot.version>
 		<springframework.version>6.1.13</springframework.version>
 		<qpid-jms-client>2.9.0</qpid-jms-client>
+		<org.apache.activemq.version>2.40.0</org.apache.activemq.version>
 	</properties>
 	<scm>
 		<tag>HEAD</tag>
@@ -154,6 +155,30 @@
 			<artifactId>qpid-jms-client</artifactId>
 			<version>${qpid-jms-client}</version>
 			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>artemis-server</artifactId>
+			<version>${org.apache.activemq.version}</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>commons-logging</groupId>
+					<artifactId>commons-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.activemq</groupId>
+			<artifactId>artemis-jakarta-client</artifactId>
+			<version>${org.apache.activemq.version}</version>
+			<scope>test</scope>
+<!--			<exclusions>-->
+<!--				<exclusion>-->
+<!--					<groupId>commons-logging</groupId>-->
+<!--					<artifactId>commons-logging</artifactId>-->
+<!--				</exclusion>-->
+<!--			</exclusions>-->
 		</dependency>
 	</dependencies>
 	<build>

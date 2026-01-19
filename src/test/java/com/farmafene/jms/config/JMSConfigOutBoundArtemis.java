@@ -1,11 +1,11 @@
 package com.farmafene.jms.config;
 
+import org.apache.activemq.artemis.jms.client.ActiveMQConnectionFactory;
 import org.apache.geronimo.connector.outbound.GenericConnectionManager;
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.LocalTransactions;
 import org.apache.geronimo.connector.outbound.connectionmanagerconfig.SinglePool;
 import org.apache.geronimo.connector.outbound.connectiontracking.ConnectionTrackingCoordinator;
 import org.apache.geronimo.transaction.manager.GeronimoTransactionManager;
-import org.apache.qpid.jms.JmsConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,16 +20,15 @@ import jakarta.jms.ConnectionFactory;
 import jakarta.jms.JMSException;
 import jakarta.resource.ResourceException;
 
-public class JMSConfigOutBound {
-	private static final Logger log = LoggerFactory.getLogger(JMSConfigOutBound.class);
+public class JMSConfigOutBoundArtemis {
+	private static final Logger log = LoggerFactory.getLogger(JMSConfigOutBoundArtemis.class);
 
 	@Bean("ProducerJMSCF")
 	public ConnectionFactory getConnectionFactoryProducer( //
-			@Value("${activemq.producer.url}") String uri, //
-			@Value("${activemq.producer.username}") String user, //
-			@Value("${activemq.producer.password}") String password //
-	) {
-		JmsConnectionFactory fisicalCF = new JmsConnectionFactory(user, password, uri);
+			@Value("${activemq.producer.urlVM:vm://0}") String uri //
+	) throws JMSException {
+		ActiveMQConnectionFactory fisicalCF = new ActiveMQConnectionFactory();
+		fisicalCF.setBrokerURL(uri);
 		return fisicalCF;
 	}
 
