@@ -37,7 +37,7 @@
 	</properties>
 	<scm>
 		<tag>HEAD</tag>
-		<url><![CDATA[https://github.com/venanciolm/tranql-connector-jakarta]]></url>
+		<url><![CDATA[https://github.com/venanciolm/jms-spring-ra]]></url>
 		<connection><![CDATA[scm:git:https://github.com/venanciolm/jms-spring-ra.git]]></connection>
 		<developerConnection><![CDATA[scm:git:https://github.com/venanciolm/jms-spring-ra.git]]></developerConnection>
 	</scm>
