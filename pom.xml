@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.farmafene.j2ee</groupId>
 	<artifactId>jms-spring-ra</artifactId>
-	<version>1.0.0</version>
+	<version>1.0.1-SNAPSHOT</version>
 	<name>${project.groupId}:${project.artifactId}</name>
 	<description><![CDATA[JMS RA for Spring]]></description>
 	<url><![CDATA[https://github.com/venanciolm/jms-spring-ra]]></url>
@@ -36,7 +36,7 @@
 		<org.apache.activemq.version>2.40.0</org.apache.activemq.version>
 	</properties>
 	<scm>
-		<tag>1.0.0</tag>
+		<tag>HEAD</tag>
 		<url><![CDATA[https://github.com/venanciolm/jms-spring-ra]]></url>
 		<connection><![CDATA[scm:git:https://github.com/venanciolm/jms-spring-ra.git]]></connection>
 		<developerConnection><![CDATA[scm:git:https://github.com/venanciolm/jms-spring-ra.git]]></developerConnection>
